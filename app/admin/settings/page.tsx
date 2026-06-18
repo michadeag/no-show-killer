@@ -18,6 +18,15 @@ const FIELDS = [
     ],
   },
   {
+    section: 'Impressum (Pflichtangaben)',
+    fields: [
+      { key: 'sender_phone', label: 'Telefonnummer' },
+      { key: 'sender_responsible', label: 'Verantwortliche Person (falls abweichend)' },
+      { key: 'sender_register_court', label: 'Registergericht (z.B. Amtsgericht München)' },
+      { key: 'sender_register_number', label: 'Handelsregisternummer (z.B. HRB 123456)' },
+    ],
+  },
+  {
     section: 'Steuer',
     fields: [
       { key: 'sender_vat', label: 'USt-ID' },

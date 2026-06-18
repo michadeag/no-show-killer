@@ -1,6 +1,19 @@
 import Link from 'next/link'
+import pool from '@/lib/db'
 
-export default function DatenschutzPage() {
+async function getSettings(): Promise<Record<string, string>> {
+  const result = await pool.query('SELECT key, value FROM app_settings')
+  const s: Record<string, string> = {}
+  for (const row of result.rows) s[row.key] = row.value ?? ''
+  return s
+}
+
+export default async function DatenschutzPage() {
+  const s = await getSettings()
+  const name = s.sender_company || s.sender_name || '[Firmenname]'
+  const address = `${s.sender_street || ''}, ${s.sender_zip || ''} ${s.sender_city || ''}`
+  const email = s.sender_email || 'support@terminsicher.app'
+
   return (
     <main className="min-h-screen bg-gray-50 py-16 px-6">
       <div className="max-w-2xl mx-auto">
@@ -13,10 +26,12 @@ export default function DatenschutzPage() {
           <section className="space-y-2">
             <h2 className="font-semibold text-gray-900 text-base">1. Verantwortlicher</h2>
             <p>Verantwortlicher im Sinne der DSGVO ist:</p>
-            <p><strong>[Firmenname / Vor- und Nachname]</strong><br />
-            [Straße und Hausnummer]<br />
-            [PLZ] [Stadt]<br />
-            E-Mail: <a href="mailto:support@terminsicher.app" className="text-[#1D9E75]">support@terminsicher.app</a></p>
+            <p>
+              <strong>{name}</strong><br />
+              {s.sender_street && <>{s.sender_street}<br /></>}
+              {s.sender_zip} {s.sender_city}<br />
+              E-Mail: <a href={`mailto:${email}`} className="text-[#1D9E75]">{email}</a>
+            </p>
           </section>
 
           <section className="space-y-2">
@@ -24,7 +39,7 @@ export default function DatenschutzPage() {
             <p>Wir verarbeiten folgende personenbezogene Daten:</p>
             <ul className="list-disc pl-5 space-y-1">
               <li><strong>Registrierungsdaten</strong> (Name, E-Mail, Passwort-Hash) — zur Bereitstellung des Accounts</li>
-              <li><strong>Kundendaten</strong> (Name, Telefonnummer) — zur Terminverwaltung und Erinnerungsversand</li>
+              <li><strong>Kundendaten</strong> (Name, Telefonnummer) — zur Terminverwaltung und zum WhatsApp-Erinnerungsversand</li>
               <li><strong>Zahlungsdaten</strong> — werden ausschließlich über Stripe verarbeitet, wir speichern keine Kreditkartendaten</li>
               <li><strong>Kommunikationsdaten</strong> — WhatsApp-Nachrichten werden über Twilio versandt</li>
             </ul>
@@ -32,7 +47,6 @@ export default function DatenschutzPage() {
 
           <section className="space-y-2">
             <h2 className="font-semibold text-gray-900 text-base">3. Rechtsgrundlagen</h2>
-            <p>Die Verarbeitung erfolgt auf Basis von:</p>
             <ul className="list-disc pl-5 space-y-1">
               <li>Art. 6 Abs. 1 lit. b DSGVO — Vertragserfüllung (Bereitstellung des Dienstes)</li>
               <li>Art. 6 Abs. 1 lit. f DSGVO — berechtigte Interessen (Sicherheit, Betrugsprävention)</li>
@@ -41,42 +55,41 @@ export default function DatenschutzPage() {
           </section>
 
           <section className="space-y-2">
-            <h2 className="font-semibold text-gray-900 text-base">4. Drittanbieter & Auftragsverarbeiter</h2>
+            <h2 className="font-semibold text-gray-900 text-base">4. Auftragsverarbeiter & Drittanbieter</h2>
             <ul className="list-disc pl-5 space-y-2">
-              <li><strong>DigitalOcean</strong> (Hosting & Datenbank) — Server in Frankfurt, EU. <a href="https://www.digitalocean.com/legal/data-processing-agreement" className="text-[#1D9E75]" target="_blank" rel="noopener noreferrer">DPA</a></li>
-              <li><strong>Stripe</strong> (Zahlungsabwicklung) — <a href="https://stripe.com/de/privacy" className="text-[#1D9E75]" target="_blank" rel="noopener noreferrer">Datenschutz</a></li>
-              <li><strong>Twilio</strong> (WhatsApp-Versand) — <a href="https://www.twilio.com/legal/privacy" className="text-[#1D9E75]" target="_blank" rel="noopener noreferrer">Datenschutz</a></li>
-              <li><strong>Resend</strong> (E-Mail-Versand) — <a href="https://resend.com/legal/privacy-policy" className="text-[#1D9E75]" target="_blank" rel="noopener noreferrer">Datenschutz</a></li>
+              <li><strong>DigitalOcean</strong> (Hosting & Datenbank, Frankfurt/EU) — <a href="https://www.digitalocean.com/legal/data-processing-agreement" className="text-[#1D9E75]" target="_blank" rel="noopener noreferrer">Auftragsverarbeitungsvertrag</a></li>
+              <li><strong>Stripe</strong> (Zahlungsabwicklung) — <a href="https://stripe.com/de/privacy" className="text-[#1D9E75]" target="_blank" rel="noopener noreferrer">Datenschutzerklärung</a></li>
+              <li><strong>Twilio</strong> (WhatsApp-Versand) — <a href="https://www.twilio.com/legal/privacy" className="text-[#1D9E75]" target="_blank" rel="noopener noreferrer">Datenschutzerklärung</a></li>
+              <li><strong>Resend</strong> (E-Mail-Versand) — <a href="https://resend.com/legal/privacy-policy" className="text-[#1D9E75]" target="_blank" rel="noopener noreferrer">Datenschutzerklärung</a></li>
             </ul>
           </section>
 
           <section className="space-y-2">
             <h2 className="font-semibold text-gray-900 text-base">5. Speicherdauer</h2>
-            <p>Wir speichern personenbezogene Daten nur solange es für die genannten Zwecke erforderlich ist oder gesetzliche Aufbewahrungspflichten bestehen (z.B. 10 Jahre für Rechnungen nach §§ 238, 257 HGB).</p>
+            <p>Wir speichern personenbezogene Daten nur solange es für die genannten Zwecke erforderlich ist oder gesetzliche Aufbewahrungspflichten bestehen (z.B. 10 Jahre für Rechnungen gemäß §§ 238, 257 HGB).</p>
           </section>
 
           <section className="space-y-2">
-            <h2 className="font-semibold text-gray-900 text-base">6. Deine Rechte</h2>
-            <p>Du hast das Recht auf:</p>
+            <h2 className="font-semibold text-gray-900 text-base">6. Deine Rechte (Art. 15–21 DSGVO)</h2>
             <ul className="list-disc pl-5 space-y-1">
-              <li>Auskunft über gespeicherte Daten (Art. 15 DSGVO)</li>
-              <li>Berichtigung unrichtiger Daten (Art. 16 DSGVO)</li>
-              <li>Löschung deiner Daten (Art. 17 DSGVO)</li>
-              <li>Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
-              <li>Datenübertragbarkeit (Art. 20 DSGVO)</li>
-              <li>Widerspruch gegen die Verarbeitung (Art. 21 DSGVO)</li>
+              <li>Auskunft über gespeicherte Daten (Art. 15)</li>
+              <li>Berichtigung unrichtiger Daten (Art. 16)</li>
+              <li>Löschung deiner Daten („Recht auf Vergessenwerden", Art. 17)</li>
+              <li>Einschränkung der Verarbeitung (Art. 18)</li>
+              <li>Datenübertragbarkeit (Art. 20)</li>
+              <li>Widerspruch gegen die Verarbeitung (Art. 21)</li>
             </ul>
-            <p>Anfragen richte bitte an: <a href="mailto:support@terminsicher.app" className="text-[#1D9E75]">support@terminsicher.app</a></p>
+            <p>Anfragen bitte an: <a href={`mailto:${email}`} className="text-[#1D9E75]">{email}</a></p>
           </section>
 
           <section className="space-y-2">
             <h2 className="font-semibold text-gray-900 text-base">7. Cookies & Tracking</h2>
-            <p>Wir verwenden ausschließlich technisch notwendige Cookies (Session-Cookie für die Anmeldung). Es werden keine Tracking- oder Werbe-Cookies gesetzt. Es findet kein Einsatz von Google Analytics oder ähnlichen Diensten statt.</p>
+            <p>Wir verwenden ausschließlich technisch notwendige Cookies (Session-Cookie für die Anmeldung, HttpOnly). Es werden keine Tracking- oder Werbe-Cookies eingesetzt. Es findet kein Einsatz von Google Analytics oder ähnlichen Diensten statt.</p>
           </section>
 
           <section className="space-y-2">
             <h2 className="font-semibold text-gray-900 text-base">8. Beschwerderecht</h2>
-            <p>Du hast das Recht, dich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. In Deutschland ist dies der Landesbeauftragte für den Datenschutz des jeweiligen Bundeslandes.</p>
+            <p>Du hast das Recht, dich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. In Deutschland ist dies der Landesbeauftragte für den Datenschutz des jeweiligen Bundeslandes. Eine Liste findest du unter <a href="https://www.bfdi.bund.de" className="text-[#1D9E75]" target="_blank" rel="noopener noreferrer">www.bfdi.bund.de</a>.</p>
           </section>
 
           <p className="text-gray-400 text-xs pt-4 border-t border-gray-100">Stand: Juni 2026</p>
