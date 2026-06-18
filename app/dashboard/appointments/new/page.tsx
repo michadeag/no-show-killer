@@ -51,7 +51,7 @@ export default function NewAppointmentPage() {
               onChange={handleChange}
               required
               placeholder="z.B. Maria Müller"
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#1D9E75]"
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1D9E75]"
             />
           </div>
 
@@ -64,7 +64,7 @@ export default function NewAppointmentPage() {
               required
               placeholder="+49 151 1234567"
               type="tel"
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#1D9E75]"
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1D9E75]"
             />
           </div>
         </div>
@@ -81,7 +81,7 @@ export default function NewAppointmentPage() {
                 onChange={handleChange}
                 required
                 type="date"
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#1D9E75]"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1D9E75]"
               />
             </div>
             <div>
@@ -92,7 +92,7 @@ export default function NewAppointmentPage() {
                 onChange={handleChange}
                 required
                 type="time"
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#1D9E75]"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1D9E75]"
               />
             </div>
           </div>
@@ -103,7 +103,7 @@ export default function NewAppointmentPage() {
               name="duration_minutes"
               value={form.duration_minutes}
               onChange={handleChange}
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#1D9E75]"
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1D9E75]"
             >
               <option value="30">30 Minuten</option>
               <option value="45">45 Minuten</option>
@@ -123,7 +123,7 @@ export default function NewAppointmentPage() {
               min="0"
               step="0.01"
               placeholder="65"
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#1D9E75]"
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1D9E75]"
             />
           </div>
         </div>

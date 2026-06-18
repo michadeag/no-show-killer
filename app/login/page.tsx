@@ -99,7 +99,7 @@ export default function LoginPage() {
                 value={loginForm.email}
                 onChange={e => setLoginForm(f => ({ ...f, email: e.target.value }))}
                 placeholder="deine@email.de"
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#1D9E75]"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1D9E75]"
               />
             </div>
             <div>
@@ -110,7 +110,7 @@ export default function LoginPage() {
                 value={loginForm.password}
                 onChange={e => setLoginForm(f => ({ ...f, password: e.target.value }))}
                 placeholder="••••••••"
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#1D9E75]"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1D9E75]"
               />
             </div>
             <button
@@ -131,7 +131,7 @@ export default function LoginPage() {
                 value={registerForm.name}
                 onChange={e => setRegisterForm(f => ({ ...f, name: e.target.value }))}
                 placeholder="Max Mustermann"
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#1D9E75]"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1D9E75]"
               />
             </div>
             <div>
@@ -142,7 +142,7 @@ export default function LoginPage() {
                 value={registerForm.businessName}
                 onChange={e => setRegisterForm(f => ({ ...f, businessName: e.target.value }))}
                 placeholder="Physio Praxis Musterstadt"
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#1D9E75]"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1D9E75]"
               />
             </div>
             <div>
@@ -153,7 +153,7 @@ export default function LoginPage() {
                 value={registerForm.email}
                 onChange={e => setRegisterForm(f => ({ ...f, email: e.target.value }))}
                 placeholder="deine@email.de"
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#1D9E75]"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1D9E75]"
               />
             </div>
             <div>
@@ -165,7 +165,7 @@ export default function LoginPage() {
                 value={registerForm.password}
                 onChange={e => setRegisterForm(f => ({ ...f, password: e.target.value }))}
                 placeholder="Mindestens 8 Zeichen"
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#1D9E75]"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1D9E75]"
               />
             </div>
             <button
