@@ -18,10 +18,14 @@ export default function NewAppointmentPage() {
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }))
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    // Phase 1: nur Demo — in Phase 2 wird hier ein API-Call gemacht
-    console.log('[Demo] Neuer Termin:', form)
+    const res = await fetch('/api/appointments/new', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    })
+    if (!res.ok) return
     setSaved(true)
     setTimeout(() => router.push('/dashboard/appointments'), 1500)
   }
