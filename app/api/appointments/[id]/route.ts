@@ -23,7 +23,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   switch (action) {
     case 'remind': {
       const message = buildReminderMessage(apt.full_name, apt.scheduled_at)
-      sendWhatsAppMessage(apt.phone_number, message)
+      await sendWhatsAppMessage(apt.phone_number, message)
       await pool.query(
         `UPDATE appointments SET status = 'reminded', reminder_sent_at = NOW() WHERE id = $1`,
         [params.id]
@@ -61,7 +61,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       )
       if (waitlist.rows.length > 0) {
         const next = waitlist.rows[0]
-        sendWhatsAppMessage(next.phone_number, `Hallo ${next.full_name}, es ist ein Termin frei geworden! Melde dich um ihn zu buchen.`)
+        await sendWhatsAppMessage(next.phone_number, `Hallo ${next.full_name}, es ist ein Termin frei geworden! Melde dich um ihn zu buchen.`)
         await pool.query(
           `INSERT INTO automation_log (business_id, appointment_id, action_type, details)
            VALUES ($1, $2, 'waitlist_contacted', $3)`,

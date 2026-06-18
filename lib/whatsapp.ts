@@ -1,8 +1,17 @@
-// Phase 1: Mock — schreibt nur ins Konsolen-Log
-// Phase 2: Hier kommt die echte Twilio/360dialog-Integration
+import twilio from 'twilio'
 
-export function sendWhatsAppMessage(phone: string, message: string): void {
-  console.log(`[WhatsApp MOCK] Gesendet an ${phone}: "${message}"`)
+const client = twilio(
+  process.env.TWILIO_ACCOUNT_SID,
+  process.env.TWILIO_AUTH_TOKEN
+)
+
+export async function sendWhatsAppMessage(phone: string, message: string) {
+  const to = phone.startsWith('whatsapp:') ? phone : `whatsapp:${phone}`
+  await client.messages.create({
+    from: process.env.TWILIO_WHATSAPP_FROM,
+    to,
+    body: message,
+  })
 }
 
 export function buildReminderMessage(customerName: string, scheduledAt: string): string {
@@ -14,5 +23,5 @@ export function buildReminderMessage(customerName: string, scheduledAt: string):
     hour: '2-digit',
     minute: '2-digit',
   })
-  return `Hallo ${customerName}, wir erinnern dich an deinen Termin am ${formatted} Uhr. Bitte antworte mit JA zur Bestätigung oder ruf uns an, falls du absagen möchtest.`
+  return `Hallo ${customerName} 👋\n\nErinnerung an deinen Termin:\n📅 *${formatted} Uhr*\n\nBitte antworte mit *JA* zur Bestätigung oder ruf uns an falls du absagen möchtest. 🙏`
 }
