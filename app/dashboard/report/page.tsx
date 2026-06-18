@@ -1,5 +1,4 @@
 import { getMockStats, MOCK_APPOINTMENTS, MOCK_BUSINESS } from '@/lib/mock-data'
-import Link from 'next/link'
 
 export default function ReportPage() {
   const isPro = MOCK_BUSINESS.plan === 'pro' || MOCK_BUSINESS.plan === 'premium'

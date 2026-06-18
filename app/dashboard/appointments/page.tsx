@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
-import { MOCK_APPOINTMENTS, AppointmentStatus } from '@/lib/mock-data'
+import { MOCK_APPOINTMENTS } from '@/lib/mock-data'
 import StatusBadge from '@/components/StatusBadge'
 
 const statusLabels: Record<string, string> = {
