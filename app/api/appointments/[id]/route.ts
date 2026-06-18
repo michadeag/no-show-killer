@@ -23,7 +23,12 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   switch (action) {
     case 'remind': {
       const message = buildReminderMessage(apt.full_name, apt.scheduled_at)
-      await sendWhatsAppMessage(apt.phone_number, message)
+      try {
+        await sendWhatsAppMessage(apt.phone_number, message)
+      } catch (err) {
+        console.error('[Twilio Error]', err)
+        return NextResponse.json({ error: String(err) }, { status: 500 })
+      }
       await pool.query(
         `UPDATE appointments SET status = 'reminded', reminder_sent_at = NOW() WHERE id = $1`,
         [params.id]
