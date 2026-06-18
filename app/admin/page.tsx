@@ -51,7 +51,9 @@ export default async function AdminPage() {
       <div className="max-w-5xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-gray-900">Admin — No-Show-Killer</h1>
-          <span className="text-sm text-gray-400">Nur sichtbar für dich</span>
+          <Link href="/admin/settings" className="text-sm bg-gray-100 text-gray-700 px-4 py-2 rounded-xl hover:bg-gray-200 font-medium">
+            ⚙️ Einstellungen
+          </Link>
         </div>
 
         {/* KPI-Karten */}

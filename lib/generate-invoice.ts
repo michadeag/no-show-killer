@@ -1,4 +1,12 @@
 import PDFDocument from 'pdfkit'
+import pool from '@/lib/db'
+
+async function getSenderSettings(): Promise<Record<string, string>> {
+  const result = await pool.query('SELECT key, value FROM app_settings')
+  const s: Record<string, string> = {}
+  for (const row of result.rows) s[row.key] = row.value ?? ''
+  return s
+}
 
 type InvoiceData = {
   invoiceNumber: string
@@ -30,7 +38,8 @@ function formatDate(d: Date) {
   return d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })
 }
 
-export function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
+export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
+  const s = await getSenderSettings()
   return new Promise((resolve, reject) => {
     const doc = new PDFDocument({ size: 'A4', margin: 50 })
     const chunks: Buffer[] = []
@@ -44,12 +53,12 @@ export function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
     const hasVat = !data.business.vat_number
 
     // Header
-    doc.fontSize(20).fillColor(GREEN).text('No-Show-Killer', 50, 50)
-    doc.fontSize(9).fillColor('#888').text('terminsicher.app', 50, 74)
+    doc.fontSize(20).fillColor(GREEN).text(s.sender_name || 'No-Show-Killer', 50, 50)
+    doc.fontSize(9).fillColor('#888').text(s.sender_email || 'terminsicher.app', 50, 74)
 
     // Sender address (small, above recipient)
     doc.fontSize(8).fillColor('#555')
-      .text('No-Show-Killer · Musterstraße 1 · 12345 Musterstadt', 50, 110)
+      .text(`${s.sender_company || s.sender_name} · ${s.sender_street} · ${s.sender_zip} ${s.sender_city}`, 50, 110)
 
     // Recipient
     doc.fontSize(11).fillColor('#111')
@@ -119,9 +128,13 @@ export function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
     }
 
     // Footer
+    const bankLine = s.bank_iban ? `${s.bank_name} · IBAN: ${s.bank_iban} · BIC: ${s.bank_bic}` : ''
+    const vatLine = s.sender_vat ? `USt-ID: ${s.sender_vat}` : s.sender_tax_number ? `St.-Nr.: ${s.sender_tax_number}` : ''
     doc.fontSize(8).fillColor('#999').font('Helvetica')
-      .text('Zahlung erfolgte per SEPA-Lastschrift / Kreditkarte über Stripe.', 50, 720)
-      .text('Bei Fragen: support@terminsicher.app', 50, 732)
+      .text('Zahlung erfolgte per SEPA-Lastschrift / Kreditkarte über Stripe.', 50, 710)
+      .text(`Bei Fragen: ${s.sender_email || 'support@terminsicher.app'}`, 50, 722)
+    if (bankLine) doc.text(bankLine, 50, 734)
+    if (vatLine) doc.text(vatLine, 50, bankLine ? 746 : 734)
 
     doc.end()
   })
