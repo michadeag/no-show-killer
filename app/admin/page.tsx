@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import pool from '@/lib/db'
+import Link from 'next/link'
 
 export default async function AdminPage() {
   const session = await getServerSession(authOptions)
@@ -86,6 +87,7 @@ export default async function AdminPage() {
                   <th className="px-4 py-3 text-right">Termine</th>
                   <th className="px-4 py-3 text-right">Umsatz</th>
                   <th className="px-4 py-3 text-left">Dabei seit</th>
+                  <th className="px-4 py-3"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
@@ -109,6 +111,14 @@ export default async function AdminPage() {
                     </td>
                     <td className="px-4 py-3 text-gray-400">
                       {new Date(b.created_at).toLocaleDateString('de-DE')}
+                    </td>
+                    <td className="px-4 py-3">
+                      <Link
+                        href={`/admin/businesses/${b.id}`}
+                        className="text-xs px-3 py-1.5 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 font-medium"
+                      >
+                        Bearbeiten
+                      </Link>
                     </td>
                   </tr>
                 ))}
