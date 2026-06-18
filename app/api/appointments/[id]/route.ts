@@ -66,12 +66,16 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       )
       if (waitlist.rows.length > 0) {
         const next = waitlist.rows[0]
-        await sendWhatsAppMessage(next.phone_number, `Hallo ${next.full_name}, es ist ein Termin frei geworden! Melde dich um ihn zu buchen.`)
-        await pool.query(
-          `INSERT INTO automation_log (business_id, appointment_id, action_type, details)
-           VALUES ($1, $2, 'waitlist_contacted', $3)`,
-          [business.id, params.id, `Warteliste kontaktiert: ${next.full_name}`]
-        )
+        try {
+          await sendWhatsAppMessage(next.phone_number, `Hallo ${next.full_name}, es ist ein Termin frei geworden! Melde dich um ihn zu buchen.`)
+          await pool.query(
+            `INSERT INTO automation_log (business_id, appointment_id, action_type, details)
+             VALUES ($1, $2, 'waitlist_contacted', $3)`,
+            [business.id, params.id, `Warteliste kontaktiert: ${next.full_name}`]
+          )
+        } catch (err) {
+          console.error('[Waitlist WhatsApp Error]', err)
+        }
       }
       return NextResponse.json({ status: 'no_show' })
     }

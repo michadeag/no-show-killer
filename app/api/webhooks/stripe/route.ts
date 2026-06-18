@@ -51,12 +51,18 @@ export async function POST(req: NextRequest) {
 
       const business = biz.rows[0]
 
-      // Rechnungsnummer generieren
-      const countResult = await pool.query('SELECT COUNT(*) FROM invoices WHERE business_id = $1', [business.id])
-      const invoiceNumber = `NSK-${new Date().getFullYear()}-${String(parseInt(countResult.rows[0].count) + 1).padStart(4, '0')}`
-
       const periodStart = new Date((invoice as any).period_start * 1000)
       const periodEnd = new Date((invoice as any).period_end * 1000)
+
+      // Prüfen ob Rechnung schon existiert (Webhook-Retry-Schutz)
+      const existing = await pool.query(
+        'SELECT invoice_number FROM invoices WHERE stripe_invoice_id = $1',
+        [invoice.id]
+      )
+      const isRetry = existing.rows.length > 0
+      const invoiceNumber = isRetry
+        ? existing.rows[0].invoice_number
+        : `NSK-${new Date().getFullYear()}-${String((await pool.query('SELECT COUNT(*) FROM invoices WHERE business_id = $1', [business.id])).rows[0].count * 1 + 1).padStart(4, '0')}`
 
       await pool.query(
         `INSERT INTO invoices (business_id, stripe_invoice_id, amount_cents, status, paid_at, invoice_number, plan, period_start, period_end)
@@ -72,20 +78,22 @@ export async function POST(req: NextRequest) {
         [(invoice as any).period_end, customerId]
       )
 
-      // PDF generieren und per E-Mail senden
-      try {
-        const pdfBuffer = await generateInvoicePDF({
-          invoiceNumber,
-          invoiceDate: new Date(),
-          periodStart,
-          periodEnd,
-          plan: business.plan,
-          amountCents: invoice.amount_paid,
-          business,
-        })
-        await sendInvoiceEmail(business.owner_email, business.name, invoiceNumber, pdfBuffer)
-      } catch (err) {
-        console.error('[Invoice PDF Error]', err)
+      // PDF nur beim ersten Mal generieren und senden
+      if (!isRetry) {
+        try {
+          const pdfBuffer = await generateInvoicePDF({
+            invoiceNumber,
+            invoiceDate: new Date(),
+            periodStart,
+            periodEnd,
+            plan: business.plan,
+            amountCents: invoice.amount_paid,
+            business,
+          })
+          await sendInvoiceEmail(business.owner_email, business.name, invoiceNumber, pdfBuffer)
+        } catch (err) {
+          console.error('[Invoice PDF Error]', err)
+        }
       }
 
       if (invoice.billing_reason !== 'subscription_create') {
