@@ -1,11 +1,11 @@
 'use client'
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { PLANS } from '@/lib/stripe'
 import { useSearchParams } from 'next/navigation'
 
 const planOrder = ['basis', 'pro', 'premium'] as const
 
-export default function BillingPage() {
+function BillingContent() {
   const [loading, setLoading] = useState<string | null>(null)
   const searchParams = useSearchParams()
   const success = searchParams.get('success')
@@ -107,5 +107,13 @@ export default function BillingPage() {
         </button>
       </div>
     </div>
+  )
+}
+
+export default function BillingPage() {
+  return (
+    <Suspense fallback={<div className="p-6 text-gray-400">Laden...</div>}>
+      <BillingContent />
+    </Suspense>
   )
 }
