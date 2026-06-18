@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
       [userId, businessName, email, 'pro'] // Demo: direkt Pro-Plan
     )
     await client.query('COMMIT')
-  } catch (_e) {
+  } catch {
     await client.query('ROLLBACK')
     return NextResponse.json({ error: 'Registrierung fehlgeschlagen' }, { status: 500 })
   } finally {
