@@ -2,6 +2,7 @@
 import { useState, useEffect, Suspense } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 
 function LoginContent() {
   const router = useRouter()
@@ -125,6 +126,11 @@ function LoginContent() {
             >
               {loading ? 'Einloggen...' : 'Einloggen →'}
             </button>
+            <div className="text-center">
+              <Link href="/forgot-password" className="text-sm text-gray-400 hover:text-[#1D9E75]">
+                Passwort vergessen?
+              </Link>
+            </div>
           </form>
         ) : (
           <form onSubmit={handleRegister} className="space-y-4">
