@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { stripe, PLANS, PlanKey } from '@/lib/stripe'
+import { stripe, PRICE_IDS } from '@/lib/stripe'
+import { PLANS, PlanKey } from '@/lib/plans'
 import pool from '@/lib/db'
 
 export async function POST(req: NextRequest) {
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest) {
     customer: customerId,
     mode: 'subscription',
     payment_method_types: ['card'],
-    line_items: [{ price: PLANS[plan].priceId, quantity: 1 }],
+    line_items: [{ price: PRICE_IDS[plan], quantity: 1 }],
     success_url: `${process.env.NEXTAUTH_URL}/dashboard/billing?success=1`,
     cancel_url: `${process.env.NEXTAUTH_URL}/dashboard/billing?cancelled=1`,
     metadata: { business_id: business.id, plan },

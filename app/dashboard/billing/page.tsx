@@ -1,6 +1,6 @@
 'use client'
 import { useState, Suspense } from 'react'
-import { PLANS } from '@/lib/stripe'
+import { PLANS } from '@/lib/plans'
 import { useSearchParams } from 'next/navigation'
 
 const planOrder = ['basis', 'pro', 'premium'] as const
