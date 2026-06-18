@@ -1,11 +1,16 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { signIn } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [tab, setTab] = useState<'login' | 'register'>('login')
+
+  useEffect(() => {
+    if (searchParams.get('tab') === 'register') setTab('register')
+  }, [searchParams])
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -179,5 +184,13 @@ export default function LoginPage() {
         )}
       </div>
     </main>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginContent />
+    </Suspense>
   )
 }

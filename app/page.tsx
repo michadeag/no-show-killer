@@ -83,7 +83,7 @@ export default function Home() {
         <span className="text-lg font-bold">📵 No-Show-Killer</span>
         <div className="flex items-center gap-3">
           <Link href="/login" className="text-sm text-gray-500 hover:text-gray-800">Einloggen</Link>
-          <Link href="/login" className="text-sm bg-[#1D9E75] text-white px-4 py-2 rounded-xl font-semibold hover:bg-[#178a64] transition-colors">
+          <Link href="/login?tab=register" className="text-sm bg-[#1D9E75] text-white px-4 py-2 rounded-xl font-semibold hover:bg-[#178a64] transition-colors">
             Kostenlos starten
           </Link>
         </div>
@@ -101,7 +101,7 @@ export default function Home() {
           No-Show-Killer erinnert deine Kunden automatisch per WhatsApp. Du tust nichts — und trotzdem kommen sie.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link href="/login" className="bg-[#1D9E75] text-white px-8 py-4 rounded-2xl text-lg font-bold hover:bg-[#178a64] transition-colors shadow-md">
+          <Link href="/login?tab=register" className="bg-[#1D9E75] text-white px-8 py-4 rounded-2xl text-lg font-bold hover:bg-[#178a64] transition-colors shadow-md">
             Jetzt kostenlos testen →
           </Link>
           <a href="#wie-es-funktioniert" className="border border-gray-200 text-gray-700 px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-gray-50 transition-colors">
@@ -205,7 +205,7 @@ export default function Home() {
                 ))}
               </ul>
               <Link
-                href="/login"
+                href="/login?tab=register"
                 className={`text-center py-3 rounded-xl font-bold text-sm transition-colors ${
                   plan.popular
                     ? 'bg-[#1D9E75] text-white hover:bg-[#178a64]'
@@ -226,7 +226,7 @@ export default function Home() {
           14 Tage gratis, keine Kreditkarte, jederzeit kündbar. Du hast nichts zu verlieren — außer deine No-Shows.
         </p>
         <Link
-          href="/login"
+          href="/login?tab=register"
           className="inline-block bg-white text-[#1D9E75] px-10 py-4 rounded-2xl text-lg font-bold hover:bg-gray-50 transition-colors shadow-md"
         >
           Jetzt loslegen →
