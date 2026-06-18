@@ -234,8 +234,12 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-6 text-center text-sm text-gray-400 border-t border-gray-100">
-        © 2026 No-Show-Killer · <Link href="/login" className="hover:text-gray-600">Einloggen</Link>
+      <footer className="py-8 px-6 text-center text-sm text-gray-400 border-t border-gray-100 space-y-2">
+        <p>© 2026 No-Show-Killer · <Link href="/login" className="hover:text-gray-600">Einloggen</Link></p>
+        <p className="flex justify-center gap-4">
+          <Link href="/impressum" className="hover:text-gray-600">Impressum</Link>
+          <Link href="/datenschutz" className="hover:text-gray-600">Datenschutz</Link>
+        </p>
       </footer>
     </main>
   )
