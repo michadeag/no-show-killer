@@ -63,6 +63,32 @@ export async function sendWelcomeEmail(to: string, businessName: string, plan: s
   })
 }
 
+export async function sendInvoiceEmail(to: string, businessName: string, invoiceNumber: string, pdfBuffer: Buffer) {
+  await resend.emails.send({
+    from: FROM,
+    to,
+    subject: `Rechnung ${invoiceNumber} – No-Show-Killer`,
+    html: `
+      <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:24px">
+        <h2 style="color:#1D9E75">Deine Rechnung ist da</h2>
+        <p>Hallo ${businessName},</p>
+        <p>im Anhang findest du deine Rechnung <strong>${invoiceNumber}</strong> für dein No-Show-Killer Abonnement.</p>
+        <a href="${process.env.NEXTAUTH_URL}/dashboard/billing"
+           style="display:inline-block;background:#1D9E75;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;margin:16px 0">
+          Zum Dashboard
+        </a>
+        <p style="color:#999;font-size:12px">No-Show-Killer · terminsicher.app</p>
+      </div>
+    `,
+    attachments: [
+      {
+        filename: `${invoiceNumber}.pdf`,
+        content: pdfBuffer,
+      },
+    ],
+  })
+}
+
 export async function sendPaymentReminderEmail(to: string, businessName: string, amount: number, daysOverdue: number) {
   await resend.emails.send({
     from: FROM,

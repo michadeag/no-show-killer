@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
 import pool from '@/lib/db'
-import { sendPaymentSuccessEmail, sendPaymentFailedEmail, sendWelcomeEmail } from '@/lib/email'
+import { sendPaymentSuccessEmail, sendPaymentFailedEmail, sendWelcomeEmail, sendInvoiceEmail } from '@/lib/email'
+import { generateInvoicePDF } from '@/lib/generate-invoice'
 import Stripe from 'stripe'
 
 export async function POST(req: NextRequest) {
@@ -43,19 +44,25 @@ export async function POST(req: NextRequest) {
       const customerId = invoice.customer as string
 
       const biz = await pool.query(
-        'SELECT id, name, owner_email, plan FROM businesses WHERE stripe_customer_id = $1',
+        'SELECT * FROM businesses WHERE stripe_customer_id = $1',
         [customerId]
       )
       if (!biz.rows[0]) break
 
       const business = biz.rows[0]
-      const amount = Math.round(invoice.amount_paid / 100)
+
+      // Rechnungsnummer generieren
+      const countResult = await pool.query('SELECT COUNT(*) FROM invoices WHERE business_id = $1', [business.id])
+      const invoiceNumber = `NSK-${new Date().getFullYear()}-${String(parseInt(countResult.rows[0].count) + 1).padStart(4, '0')}`
+
+      const periodStart = new Date((invoice as any).period_start * 1000)
+      const periodEnd = new Date((invoice as any).period_end * 1000)
 
       await pool.query(
-        `INSERT INTO invoices (business_id, stripe_invoice_id, amount_cents, status, paid_at)
-         VALUES ($1, $2, $3, 'paid', NOW())
+        `INSERT INTO invoices (business_id, stripe_invoice_id, amount_cents, status, paid_at, invoice_number, plan, period_start, period_end)
+         VALUES ($1, $2, $3, 'paid', NOW(), $4, $5, $6, $7)
          ON CONFLICT (stripe_invoice_id) DO UPDATE SET status = 'paid', paid_at = NOW()`,
-        [business.id, invoice.id, invoice.amount_paid]
+        [business.id, invoice.id, invoice.amount_paid, invoiceNumber, business.plan, periodStart, periodEnd]
       )
 
       await pool.query(
@@ -65,8 +72,24 @@ export async function POST(req: NextRequest) {
         [(invoice as any).period_end, customerId]
       )
 
+      // PDF generieren und per E-Mail senden
+      try {
+        const pdfBuffer = await generateInvoicePDF({
+          invoiceNumber,
+          invoiceDate: new Date(),
+          periodStart,
+          periodEnd,
+          plan: business.plan,
+          amountCents: invoice.amount_paid,
+          business,
+        })
+        await sendInvoiceEmail(business.owner_email, business.name, invoiceNumber, pdfBuffer)
+      } catch (err) {
+        console.error('[Invoice PDF Error]', err)
+      }
+
       if (invoice.billing_reason !== 'subscription_create') {
-        await sendPaymentSuccessEmail(business.owner_email, business.name, amount, business.plan)
+        await sendPaymentSuccessEmail(business.owner_email, business.name, Math.round(invoice.amount_paid / 100), business.plan)
       }
       break
     }
