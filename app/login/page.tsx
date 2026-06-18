@@ -52,7 +52,7 @@ export default function LoginPage() {
       password: registerForm.password,
       redirect: false,
     })
-    router.push('/dashboard')
+    router.push('/onboarding')
   }
 
   return (
