@@ -30,6 +30,7 @@ const plans = [
     features: [
       'Bis 50 Termine pro Monat',
       'WhatsApp-Erinnerungen',
+      'Online-Buchungsseite',
       'Kundenverwaltung',
       '14 Tage kostenlos testen',
     ],
@@ -44,6 +45,7 @@ const plans = [
     features: [
       'Unbegrenzte Termine',
       'WhatsApp-Erinnerungen',
+      'Online-Buchungsseite',
       'Wochenbericht & Umsatz-Tracker',
       'Automatische Warteliste',
       '14 Tage kostenlos testen',
@@ -68,11 +70,34 @@ const plans = [
   },
 ]
 
+const features = [
+  {
+    icon: '💬',
+    title: 'WhatsApp-Erinnerungen',
+    text: 'Automatische Erinnerungen 24 Stunden vor jedem Termin. Kein Aufwand für dich.',
+  },
+  {
+    icon: '🔗',
+    title: 'Online-Buchungsseite',
+    text: 'Deine Kunden buchen selbst — rund um die Uhr. Du erhältst die Buchung, sie die WhatsApp-Bestätigung.',
+  },
+  {
+    icon: '📊',
+    title: 'Wochenbericht & Umsatz',
+    text: 'Sieh auf einen Blick wie viele Termine stattgefunden haben und was du verdient hast.',
+  },
+  {
+    icon: '⏰',
+    title: 'Automatische Warteliste',
+    text: 'Wenn jemand absagt, wird automatisch der nächste von der Warteliste kontaktiert.',
+  },
+]
+
 const steps = [
   { num: '1', title: 'Konto anlegen', text: 'In 2 Minuten registriert. Kein technisches Wissen nötig.' },
-  { num: '2', title: 'Termine eintragen', text: 'Kunde, Datum, Uhrzeit — fertig. Oder dein Kalender direkt verbinden.' },
-  { num: '3', title: 'Erinnerung geht raus', text: '24 Stunden vorher bekommt dein Kunde eine WhatsApp. Automatisch.' },
-  { num: '4', title: 'Geld bleibt in der Kasse', text: 'Keine Erinnerung = mehr No-Shows = weniger Umsatz. Wir verhindern das.' },
+  { num: '2', title: 'Buchungsseite teilen', text: 'Deine persönliche Buchungsseite — einfach den Link auf deiner Website oder bei Google einbinden.' },
+  { num: '3', title: 'Kunde bucht selbst', text: 'Dein Kunde wählt Datum und Uhrzeit. Du siehst den Termin sofort im Dashboard.' },
+  { num: '4', title: 'Erinnerung geht raus', text: '24 Stunden vorher bekommt dein Kunde eine WhatsApp. Automatisch. Geld bleibt in der Kasse.' },
 ]
 
 export default function Home() {
@@ -127,8 +152,23 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Features */}
+      <section className="py-20 px-6 max-w-3xl mx-auto">
+        <h2 className="text-3xl font-bold text-center mb-3">Alles was du brauchst</h2>
+        <p className="text-center text-gray-500 mb-12">Erinnerungen, Buchungen, Berichte — in einer App.</p>
+        <div className="grid sm:grid-cols-2 gap-6">
+          {features.map((f) => (
+            <div key={f.title} className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+              <span className="text-3xl mb-3 block">{f.icon}</span>
+              <h3 className="font-bold text-gray-900 mb-2">{f.title}</h3>
+              <p className="text-sm text-gray-500 leading-relaxed">{f.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Wie es funktioniert */}
-      <section id="wie-es-funktioniert" className="py-20 px-6 max-w-2xl mx-auto">
+      <section id="wie-es-funktioniert" className="py-20 px-6 max-w-2xl mx-auto bg-gray-50">
         <h2 className="text-3xl font-bold text-center mb-12">So einfach funktioniert es</h2>
         <div className="space-y-8">
           {steps.map((step) => (
