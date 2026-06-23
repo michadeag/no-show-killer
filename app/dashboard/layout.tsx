@@ -9,6 +9,7 @@ const navItems = [
   { href: '/dashboard/customers', label: '👥 Kunden' },
   { href: '/dashboard/report', label: '📊 Bericht' },
   { href: '/dashboard/billing', label: '💳 Abo' },
+  { href: '/dashboard/booking-settings', label: '🔗 Buchung' },
 ]
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
